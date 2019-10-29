@@ -1,0 +1,10 @@
+{
+  "name": "sass-back",
+  "version": "1.0.0",
+  "main": "main.js",
+  "author": "Peter Wildberger",
+  "license": "MIT",
+  "dependencies": {
+    "@types/node": "^12.11.7"
+  }
+}
