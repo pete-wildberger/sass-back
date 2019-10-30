@@ -5,18 +5,20 @@ import {handleCSS, handleHTML} from './parser';
 const execute = util.promisify(exec);
 
 class App {
+    private cssExtension = '';
+    private globalCSSFile = 'styles'
     private cssClassNameRegEx = /\.-?[_a-zA-Z]+[_a-zA-Z0-9-]*\s?\{{1}/;
     private htmlClassNameRexEx = /class[ \t]*=[ \t]*"[^"]+"/
     constructor() {
-        const argv = minimist(process.argv.slice(2));
-        console.log(argv);
-        // this.main();
+        const argv:{[key: string]: any} = minimist(process.argv.slice(2));
+        this.cssExtension = argv.e;
+        this.main(argv);
     }
 
-    main = async () => {
-        const filePath = process.argv[2]
+    main = async (args: {[key: string]: any}): Promise<void> => {
+        const filePath = args.d;
         const html = await handleHTML(filePath+'.html', this.htmlClassNameRexEx);
-        const css = await handleCSS(filePath+'.scss', this.cssClassNameRegEx);
+        const css = await handleCSS(filePath + this.cssExtension, this.cssClassNameRegEx);
         console.log(css, html);
         
         // const HTMLfiles = await this.getFileList(filePath, '*.html');
@@ -24,6 +26,10 @@ class App {
 
     }
 
+    validateArgs = (args: {[key: string]: any}): {[key: string]: any} => {
+        return args;
+    }
+    
     getFileList = async (file_path: string, extension: string) => {
         try {
             const { stdout, stderr } = await execute(`find ${file_path} -path ${file_path}/node_modules -prune -o -name '${extension}' -print`);
@@ -39,6 +45,7 @@ class App {
             throw e;
         }
     }
+
     compare = (base: {[key: string]: string}, comparer: {[key: string]: string}) => {
 
     }
