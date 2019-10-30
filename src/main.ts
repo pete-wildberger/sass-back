@@ -1,6 +1,6 @@
 import * as util from 'util';
 import { exec } from 'child_process';
-import {handleCSS} from './parser';
+import {handleCSS, handleHTML} from './parser';
 const execute = util.promisify(exec);
 
 class App {
@@ -12,8 +12,10 @@ class App {
 
     main = async () => {
         const filePath = process.argv[2]
-        const css = await handleCSS(filePath, this.cssClassNameRegEx);
-        console.log(css);
+        const html = await handleHTML(filePath+'.html', this.htmlClassNameRexEx);
+        const css = await handleCSS(filePath+'.scss', this.cssClassNameRegEx);
+        console.log(css, html);
+        
         // const HTMLfiles = await this.getFileList(filePath, '*.html');
         // console.log(HTMLfiles);
 
@@ -33,6 +35,9 @@ class App {
         } catch (e) {
             throw e;
         }
+    }
+    compare = (base: {[key: string]: string}, comparer: {[key: string]: string}) => {
+
     }
 }
 

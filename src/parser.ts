@@ -1,14 +1,19 @@
 import * as fs from 'fs';
 
-export const handleCSS = async(file_path: string, regExp: RegExp ): Promise<string[]> => {
+export const handleCSS = async(file_path: string, regExp: RegExp ): Promise<{[key: string]: string}> => {
     const cssClasses = await parseFile(file_path, regExp, trimCss);
     return cssClasses;
 }
 
-const parseFile = (file_path: string, regExp: RegExp, trimmer: Function): Promise<string[]> => {
+export const handleHTML = async(file_path: string, regExp: RegExp ): Promise<{[key: string]: string}> => {
+    const htmlClasses = await parseFile(file_path, regExp, trimHTML);
+    return htmlClasses;
+}
+
+const parseFile = (file_path: string, regExp: RegExp, trimmer: Function): Promise<{[key: string]: string}> => {
     const stream = fs.createReadStream(file_path);
     let remaining = '';
-    let results: string[] = []
+    const results: {[key: string]: string} = {};
     return new Promise((done, fail) => {
         stream.on('data', (data) => {
             remaining += data;
@@ -20,7 +25,7 @@ const parseFile = (file_path: string, regExp: RegExp, trimmer: Function): Promis
                 const result= line.match(regExp);
                 if (result !== null) {
                     const [text] = result;
-                    results.push(trimmer(text));
+                    results[trimmer(text)] = '';
                 }
                 index = remaining.indexOf('\n', last);
             }
@@ -40,4 +45,8 @@ const parseFile = (file_path: string, regExp: RegExp, trimmer: Function): Promis
 
 const trimCss = (match: string) => {
     return match.substring(1, match.length-1).trim();
+}
+
+const trimHTML = (match: string) => {
+    return match.split('"')[1];
 }
