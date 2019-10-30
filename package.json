@@ -5,6 +5,8 @@
   "author": "Peter Wildberger",
   "license": "MIT",
   "dependencies": {
-    "@types/node": "^12.11.7"
+    "@types/minimist": "^1.2.0",
+    "@types/node": "^12.11.7",
+    "minimist": "^1.2.0"
   }
 }
