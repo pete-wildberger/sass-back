@@ -1,19 +1,20 @@
 import * as fs from 'fs';
 
-export const handleCSS = async(file_path: string, regExp: RegExp ): Promise<{[key: string]: string}> => {
-    const cssClasses = await parseFile(file_path, regExp, trimCss);
+export const handleCSS = async(file_path: string, extension: string, regExp: RegExp ): Promise<{[key: string]: any[]}> => {
+    const cssClasses = await parseFile(file_path, extension, regExp, trimCss);
     return cssClasses;
 }
 
-export const handleHTML = async(file_path: string, regExp: RegExp ): Promise<{[key: string]: string}> => {
-    const htmlClasses = await parseFile(file_path, regExp, trimHTML);
+export const handleHTML = async(file_path: string, extension: string, regExp: RegExp ): Promise<{[key: string]: any[]}> => {
+    const htmlClasses = await parseFile(file_path, extension, regExp, trimHTML);
     return htmlClasses;
 }
 
-const parseFile = (file_path: string, regExp: RegExp, trimmer: Function): Promise<{[key: string]: string}> => {
-    const stream = fs.createReadStream(file_path);
+const parseFile = (file_path: string, extension: string, regExp: RegExp, trimmer: Function): Promise<{[key: string]: any[]}> => {
+    const stream = fs.createReadStream(file_path + extension);
     let remaining = '';
-    const results: {[key: string]: string} = {};
+    const results: {[key: string]: any[]} = {};
+    results[file_path] = [];
     return new Promise((done, fail) => {
         stream.on('data', (data) => {
             remaining += data;
@@ -25,7 +26,7 @@ const parseFile = (file_path: string, regExp: RegExp, trimmer: Function): Promis
                 const result= line.match(regExp);
                 if (result !== null) {
                     const [text] = result;
-                    results[trimmer(text)] = '';
+                    results[file_path].push(trimmer(text));
                 }
                 index = remaining.indexOf('\n', last);
             }

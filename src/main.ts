@@ -17,19 +17,20 @@ class App {
 
     main = async (args: {[key: string]: any}): Promise<void> => {
         const filePath = args.d;
-        const html = await handleHTML(filePath+'.html', this.htmlClassNameRexEx);
-        const css = await handleCSS(filePath + this.cssExtension, this.cssClassNameRegEx);
-        console.log(css, html);
+        const html_files = await this.getFileList(filePath, '.html');
+        const style_files = await this.getFileList(filePath, '.scss');
+
         
         // const HTMLfiles = await this.getFileList(filePath, '*.html');
         // console.log(HTMLfiles);
 
     }
 
-    validateArgs = (args: {[key: string]: any}): {[key: string]: any} => {
-        return args;
+    compare = async (base: {[key: string]: string}, comparer: {[key: string]: string}, global_CSS: {[key: string]: string}) => {
+        // const html = await handleHTML(filePath, '.html', this.htmlClassNameRexEx);
+        // const css = await handleCSS(filePath, this.cssExtension, this.cssClassNameRegEx);
     }
-    
+
     getFileList = async (file_path: string, extension: string) => {
         try {
             const { stdout, stderr } = await execute(`find ${file_path} -path ${file_path}/node_modules -prune -o -name '${extension}' -print`);
@@ -46,7 +47,11 @@ class App {
         }
     }
 
-    compare = (base: {[key: string]: string}, comparer: {[key: string]: string}) => {
+    validateArgs = (args: {[key: string]: any}): {[key: string]: any} => {
+        return args;
+    }
+
+    help = (args: {[key: string]: any}): void => {
 
     }
 }
